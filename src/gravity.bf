@@ -20,6 +20,21 @@ public static class gravity
 	public struct json_t;
 	public struct json_value;
 
+	public const String GRAVITY_CLASS_INT_NAME          = "Int";
+	public const String GRAVITY_CLASS_FLOAT_NAME        = "Float";
+	public const String GRAVITY_CLASS_BOOL_NAME         = "Bool";
+	public const String GRAVITY_CLASS_STRING_NAME       = "String";
+	public const String GRAVITY_CLASS_OBJECT_NAME       = "Object";
+	public const String GRAVITY_CLASS_CLASS_NAME        = "Class";
+	public const String GRAVITY_CLASS_NULL_NAME         = "Null";
+	public const String GRAVITY_CLASS_FUNCTION_NAME     = "Func";
+	public const String GRAVITY_CLASS_FIBER_NAME        = "Fiber";
+	public const String GRAVITY_CLASS_INSTANCE_NAME     = "Instance";
+	public const String GRAVITY_CLASS_CLOSURE_NAME      = "Closure";
+	public const String GRAVITY_CLASS_LIST_NAME         = "List";
+	public const String GRAVITY_CLASS_MAP_NAME          = "Map";
+	public const String GRAVITY_CLASS_RANGE_NAME        = "Range";
+	public const String GRAVITY_CLASS_UPVALUE_NAME      = "Upvalue";
 
 	enum gtoken_t
 	{
@@ -462,8 +477,8 @@ public static class gravity
 	// core functions
 	[CLink] public static extern gravity_class_t  * gravity_core_class_from_name(char* name);
 	[CLink] public static extern void              gravity_core_free();
-	[CLink] public static extern char            ** gravity_core_identifiers(void);
-	[CLink] public static extern void              gravity_core_init(void);
+	[CLink] public static extern char            ** gravity_core_identifiers();
+	[CLink] public static extern void              gravity_core_init();
 	[CLink] public static extern void              gravity_core_register(gravity_vm* vm);
 	[CLink] public static extern bool              gravity_iscore_class(gravity_class_t* c);
 
@@ -692,23 +707,26 @@ public static class gravity
 	[CRepr]
 	public struct gravity_object_t;
 
+	[CRepr, Union]
+	public struct gravity_slot_t
+	{
+		public gravity_int_t       	n; // integer slot
+		public gravity_float_t     	f; // float/double slot
+		public gravity_object_t*   	p; // ptr to object slot
+	}
+
 	// Everything inside Gravity VM is a gravity_value_t struct
 	[CRepr]
 	public struct gravity_value_t
 	{
-		gravity_class_t         * isa; // EVERY object must have an ISA pointer (8 bytes on a 64bit system) [Union] struct
+		public gravity_class_t* isa; // EVERY object must have an ISA pointer (8 bytes on a 64bit system) [Union] struct
 
 		// union takes 8 bytes on a 64bit system
-		/**/ [Union] struct
-		{
-			gravity_int_t       n; // integer slot
-			gravity_float_t     f; // float/double slot
-			gravity_object_t    * p; // ptr to object slot
-		};
+		public gravity_slot_t p;
 	}
 
 	// All VM shares the same foundation classes
-	typealias gravity_class_object = gravity_class_t*;
+	/*typealias gravity_class_object = gravity_class_t*;
 	typealias gravity_class_bool = gravity_class_t*;
 	typealias gravity_class_null = gravity_class_t*;
 	typealias gravity_class_int = gravity_class_t*;
@@ -723,7 +741,7 @@ public static class gravity
 	typealias gravity_class_map = gravity_class_t*;
 	typealias gravity_class_module = gravity_class_t*;
 	typealias gravity_class_range = gravity_class_t*;
-	typealias gravity_class_upvalue = gravity_class_t*;
+	typealias gravity_class_upvalue = gravity_class_t*;*/
 
 	// typedef marray_t(gravity_value_t)        gravity_value_r;   // array of values
 	[CRepr]
@@ -821,7 +839,7 @@ public static class gravity
 	[CRepr]
 	public struct gravity_closure_t
 	{
-		gravity_class_t         * isa; // to be an object
+		public gravity_class_t         * isa; // to be an object
 		gravity_gc_t            gc; // to be collectable by the garbage collector
 
 		gravity_vm              * vm; // vm bound to this closure (useful when executed from a bridge)
@@ -903,7 +921,7 @@ public static class gravity
 	[CRepr]
 	public struct gravity_class_t
 	{
-		gravity_class_t         * isa; // to be an object
+		public gravity_class_t         * isa; // to be an object
 		gravity_gc_t            gc; // to be collectable by the garbage collector
 
 		gravity_class_t         * objclass; // meta class
