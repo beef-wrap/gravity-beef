@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Diagnostics;
 using System.IO;
-using static gravity_Beef.gravity;
+using static gravity.gravity;
 
 namespace example;
 

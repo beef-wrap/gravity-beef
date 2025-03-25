@@ -2,9 +2,11 @@ FileVersion = 1
 
 [Project]
 Name = "gravity-beef"
-TargetType = "BeefLib"
-StartupObject = "gravity_beef.Program"
+DefaultNamespace = "gravity"
 
 [Configs.Debug.Win64]
 CLibType = "DynamicDebug"
-LibPaths = ["$(ProjectDir)\\libs\\gravity.lib"]
+LibPaths = ["$(ProjectDir)\\libs\\windows\\gravityd.lib"]
+
+[Configs.Release.Win64]
+LibPaths = ["$(ProjectDir)\\libs\\windows\\gravity.lib"]

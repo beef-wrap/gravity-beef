@@ -1,7 +1,7 @@
 using System;
 using System.Interop;
 
-namespace gravity_Beef;
+namespace gravity;
 
 public static class gravity
 {
@@ -36,7 +36,7 @@ public static class gravity
 	public const String GRAVITY_CLASS_RANGE_NAME        = "Range";
 	public const String GRAVITY_CLASS_UPVALUE_NAME      = "Upvalue";
 
-	enum gtoken_t
+	public enum gtoken_t : c_int
 	{
 		// General (8)
 		TOK_EOF    = 0, TOK_ERROR, TOK_COMMENT, TOK_STRING, TOK_NUMBER, TOK_IDENTIFIER, TOK_SPECIAL, TOK_MACRO,
@@ -66,12 +66,12 @@ public static class gravity
 		TOK_END
 	}
 
-	enum gliteral_t
+	public enum gliteral_t : c_int
 	{
 		LITERAL_STRING, LITERAL_FLOAT, LITERAL_INT, LITERAL_BOOL, LITERAL_STRING_INTERPOLATED
 	}
 
-	enum gbuiltin_t
+	public enum gbuiltin_t : c_int
 	{
 		BUILTIN_NONE, BUILTIN_LINE, BUILTIN_COLUMN, BUILTIN_FILE, BUILTIN_FUNC, BUILTIN_CLASS
 	}
@@ -89,7 +89,7 @@ public static class gravity
 		char          		* value; // token value (not null terminated)
 	}
 
-	public enum gnode_n
+	public enum gnode_n : c_int
 	{
 		// statements: 7
 		NODE_LIST_STAT, NODE_COMPOUND_STAT, NODE_LABEL_STAT, NODE_FLOW_STAT, NODE_JUMP_STAT, NODE_LOOP_STAT, NODE_EMPTY_STAT,
@@ -105,8 +105,7 @@ public static class gravity
 		NODE_CALL_EXPR, NODE_SUBSCRIPT_EXPR, NODE_ACCESS_EXPR
 	}
 
-	[CRepr]
-	public enum gnode_location_type
+	public enum gnode_location_type : c_int
 	{
 		LOCATION_LOCAL,
 		LOCATION_GLOBAL,
@@ -395,8 +394,7 @@ public static class gravity
 	}
 
 	// error type and code definitions
-	[CRepr]
-	public enum error_type_t
+	public enum error_type_t : c_int
 	{
 		GRAVITY_ERROR_NONE = 0,
 		GRAVITY_ERROR_SYNTAX,
@@ -528,7 +526,7 @@ public static class gravity
 	[CLink] public static extern void                gravity_vm_loadclosure(gravity_vm* vm, gravity_closure_t* closure);
 	[CLink] public static extern gravity_value_t     gravity_vm_lookup(gravity_vm* vm, gravity_value_t key);
 	[CLink] public static extern gravity_vm         * gravity_vm_new(gravity_delegate_t* dlg);
-	[CLink] public static extern gravity_vm         * gravity_vm_newmini(void);
+	[CLink] public static extern gravity_vm         * gravity_vm_newmini();
 	[CLink] public static extern void                gravity_vm_reset(gravity_vm* vm);
 	[CLink] public static extern gravity_value_t     gravity_vm_result(gravity_vm* vm);
 	[CLink] public static extern bool                gravity_vm_runclosure(gravity_vm* vm, gravity_closure_t* closure, gravity_value_t sender, gravity_value_t[] parameters, uint16_t nparams);
@@ -571,7 +569,7 @@ public static class gravity
 	[CLink] public static extern bool                gravity_vm_set(gravity_vm* vm, char* key, gravity_value_t value);
 
 	[CLink] public static extern bool                gravity_isopt_class(gravity_class_t* c);
-	[CLink] public static extern void                gravity_opt_free(void);
+	[CLink] public static extern void                gravity_opt_free();
 	[CLink] public static extern void                gravity_opt_register(gravity_vm* vm);
 
 	const int GRAVITYHASH_ENABLE_STATS    = 1; // if 0 then stats are not enabled
@@ -757,15 +755,13 @@ public static class gravity
 
 	function uint32_t gravity_gc_callback(gravity_vm* vm, gravity_object_t* obj);
 
-	[CRepr]
-	public enum gravity_special_index
+	public enum gravity_special_index : c_int
 	{
 		EXEC_TYPE_SPECIAL_GETTER = 0, // index inside special gravity_function_t union to represent getter func
 		EXEC_TYPE_SPECIAL_SETTER = 1, // index inside special gravity_function_t union to represent setter func
 	}
 
-	[CRepr]
-	public enum gravity_exec_type
+	public enum gravity_exec_type : c_int
 	{
 		EXEC_TYPE_NATIVE, // native gravity code (can change stack)
 		EXEC_TYPE_INTERNAL, // c internal code (can change stack)
@@ -880,8 +876,7 @@ public static class gravity
 		bool                    outloop; // special case for events or native code executed from C that must be executed separately
 	}
 
-	[CRepr]
-	public enum gravity_fiber_status
+	public enum gravity_fiber_status : c_int
 	{
 		FIBER_NEVER_EXECUTED = 0,
 		FIBER_ABORTED_WITH_ERROR = 1,
@@ -916,7 +911,7 @@ public static class gravity
 		nanotime_t              lasttime; // last time Fiber has been called
 		gravity_float_t         timewait; // used in yieldTime
 		gravity_float_t         elapsedtime; // time passed since last execution
-	};
+	}
 
 	[CRepr]
 	public struct gravity_class_t
@@ -1092,9 +1087,9 @@ public static class gravity
 	[CLink] public static extern gravity_value_t     gravity_value_from_error(char* msg);
 	[CLink] public static extern gravity_value_t     gravity_value_from_float(gravity_float_t f);
 	[CLink] public static extern gravity_value_t     gravity_value_from_int(gravity_int_t n);
-	[CLink] public static extern gravity_value_t     gravity_value_from_null(void);
+	[CLink] public static extern gravity_value_t     gravity_value_from_null();
 	[CLink] public static extern gravity_value_t     gravity_value_from_object(void* obj);
-	[CLink] public static extern gravity_value_t     gravity_value_from_undefined(void);
+	[CLink] public static extern gravity_value_t     gravity_value_from_undefined();
 
 	// MARK: - OBJECT -
 	[CLink] public static extern void                gravity_object_blacken(gravity_vm* vm, gravity_object_t* obj);
