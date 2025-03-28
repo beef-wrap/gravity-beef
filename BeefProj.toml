@@ -5,8 +5,7 @@ Name = "gravity-beef"
 DefaultNamespace = "gravity"
 
 [Configs.Debug.Win64]
-CLibType = "DynamicDebug"
-LibPaths = ["$(ProjectDir)\\libs\\windows\\gravityd.lib"]
+LibPaths = ["$(ProjectDir)\\libs\\windows\\x64\\gravityapi_s_d.lib"]
 
 [Configs.Release.Win64]
-LibPaths = ["$(ProjectDir)\\libs\\windows\\gravity.lib"]
+LibPaths = ["$(ProjectDir)\\libs\\windows\\x64\\gravityapi_s.lib"]
